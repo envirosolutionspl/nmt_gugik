@@ -7,7 +7,7 @@ name=Przechwyć Wysokość GUGiK NMT API
 qgisMinimumVersion=3.0
 description=Pozwala na sprawdzenie wysokości terenu w danym punkcie na podstawie API GUGiK NMT. EN: Allows user to check elevation level of the terrain (Poland only) based on GUGiK's NMT service
 version=1.0
-author=Michał Włoga - EnviroSolutions Sp. z o.o.
+author=EnviroSolutions Sp. z o.o. - Michał Włoga
 email=office@envirosolutions.pl
 
 about=Wtyczka pozwala na przechwycenie wysokości terenu w dowolnym punkcie na obszarze Polski. Wtyczka korzysta z usługi NMT udostępnionej przez GUGiK.
