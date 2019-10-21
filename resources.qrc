@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="/plugins/przechwyc_wysokosc">
+    <file>drzewiec.png</file>
+    <file>icon.png</file>
+    <file>icon_pw2.png</file>
+  </qresource>
+</RCC>
