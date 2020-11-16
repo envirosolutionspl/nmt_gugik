@@ -36,7 +36,7 @@ import os.path
 from .nmt_api import NmtAPI
 
 """Wersja wtyczki"""
-plugin_version = '1.0'
+plugin_version = '1.1'
 plugin_name = 'Przechwyć Wysokość'
 
 class PrzechwycWysokosc:
@@ -50,6 +50,10 @@ class PrzechwycWysokosc:
             application at run time.
         :type iface: QgsInterface
         """
+        from .qgis_feed import QgisFeed
+        if Qgis.QGIS_VERSION_INT >= 31000:
+            self.feed = QgisFeed()
+            self.feed.initFeed()
         # Save reference to the QGIS interface
         self.iface = iface
         # initialize plugin directory
