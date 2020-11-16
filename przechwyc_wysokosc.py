@@ -36,7 +36,7 @@ import os.path
 from .nmt_api import NmtAPI
 
 """Wersja wtyczki"""
-plugin_version = '1.1'
+plugin_version = '1.2'
 plugin_name = 'Przechwyć Wysokość'
 
 class PrzechwycWysokosc:
