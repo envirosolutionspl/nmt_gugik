@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'C:\Users\Wojtek\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\nmt_gugik\przechwyc_wysokosc_dockwidget_base.ui'
+# Form implementation generated from reading ui file 'przechwyc_wysokosc_dockwidget_base.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
