@@ -44,6 +44,7 @@ class PrzechwycWysokoscDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # http://doc.qt.io/qt-5/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+        self.label_4.setMargin(5)
 
     def closeEvent(self, event):
         self.closingPlugin.emit()
