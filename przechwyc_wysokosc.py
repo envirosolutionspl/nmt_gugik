@@ -8,7 +8,7 @@
                               -------------------
         begin                : 2019-10-15
         git sha              : $Format:%H$
-        copyright            : (C) 2019 by EnviroSolutions Sp. z o.o. - Michał Włoga
+        copyright            : (C) 2019 by EnviroSolutions Sp. z o.o.
         email                : office@envirosolutions.pl
  ***************************************************************************/
 
@@ -36,8 +36,9 @@ import os.path
 from .nmt_api import NmtAPI
 
 """Wersja wtyczki"""
-plugin_version = '1.3'
+plugin_version = '1.3.1'
 plugin_name = 'Przechwyć Wysokość'
+
 
 class PrzechwycWysokosc:
     """QGIS Plugin Implementation."""
@@ -55,6 +56,7 @@ class PrzechwycWysokosc:
             from .qgis_feed import QgisFeed
             self.feed = QgisFeed()
             self.feed.initFeed()
+
         # Save reference to the QGIS interface
         self.iface = iface
         # initialize plugin directory
@@ -77,6 +79,7 @@ class PrzechwycWysokosc:
         self.menu = self.tr(u'&EnviroSolutions')
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.mainWindow().findChild(QToolBar, 'EnviroSolutions')
+
         if not self.toolbar:
             self.toolbar = self.iface.addToolBar(u'EnviroSolutions')
             self.toolbar.setObjectName(u'EnviroSolutions')
@@ -85,7 +88,8 @@ class PrzechwycWysokosc:
 
         self.pluginIsActive = False
         self.dockwidget = None
-
+        
+        self.project = QgsProject.instance()
         self.canvas = self.iface.mapCanvas()
         # out click tool will emit a QgsPoint on every click
         self.clickTool = QgsMapToolEmitPoint(self.canvas)
@@ -120,6 +124,7 @@ class PrzechwycWysokosc:
         status_tip=None,
         whats_this=None,
         parent=None):
+
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -186,13 +191,12 @@ class PrzechwycWysokosc:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
-        icon_path = ':/plugins/przechwyc_wysokosc/icon_pw2.png'
+        icon_path = ':/plugins/przechwyc_wysokosc/icons/icon_pw2.png'
         self.add_action(
             icon_path,
             text=self.tr(u'Przechwyć Wysokość'),
             callback=self.run,
             parent=self.iface.mainWindow())
-
 
 
     def onClosePlugin(self):
@@ -223,10 +227,10 @@ class PrzechwycWysokosc:
                 action)
             #self.iface.removeToolBarIcon(action)
             self.toolbar.removeAction(action)
+
         # remove the toolbar
         del self.toolbar
 
-    #--------------------------------------------------------------------------
 
     def run(self):
         """Run method that loads and starts the plugin"""
@@ -239,9 +243,11 @@ class PrzechwycWysokosc:
             # dockwidget may not exist if:
             #    first run of plugin
             #    removed on close (see self.onClosePlugin method)
+
             if self.dockwidget == None:
                 # Create the dockwidget (after translation) and keep reference
                 self.dockwidget = PrzechwycWysokoscDockWidget()
+
             # Eventy
             self.dockwidget.captureButton.clicked.connect(self.captureButton_clicked)
             self.dockwidget.copyButton.clicked.connect(self.copyButton_clicked)
@@ -249,6 +255,7 @@ class PrzechwycWysokosc:
             self.dockwidget.closingPlugin.connect(self.onClosePlugin)
 
             # informacje o wersji
+            self.dockwidget.setWindowTitle('%s %s' % (plugin_name, plugin_version))
             self.dockwidget.lbl_pluginVersion.setText('%s %s' % (plugin_name, plugin_version))
 
             # show the dockwidget
@@ -256,10 +263,19 @@ class PrzechwycWysokosc:
             self.iface.addDockWidget(Qt.LeftDockWidgetArea, self.dockwidget)
             self.dockwidget.show()
 
+
     def captureButton_clicked(self):
+        """
+        Funkcja uaktywnia funkcjonalność klikania na mapie punktu po kliknięciu przycisku 'Przechwytuj'
+        """
         self.canvas.setMapTool(self.clickTool)
 
+
     def copyButton_clicked(self):
+        """
+        Funkcja kopiuje zczytane współrzędne do schowka
+        """
+        
         cb = QApplication.clipboard()
         cb.clear(mode=cb.Clipboard)
         cb.setText("(%s, %s)" % (self.dockwidget.coordsEdit.text(),
@@ -268,23 +284,34 @@ class PrzechwycWysokosc:
                                             'Skopiowano współrzedne x,y,h do schowka',
                                             level=Qgis.Success, duration=3)
 
+
     def canvas_clicked(self, point):
+        """
+        Funkcja odpowiadająca za ściągnięcie współrzędnych dla klikniętego punktu na mapie
+        """
+        
         coords = "{}, {}".format(point.x(), point.y())
 
         self.dockwidget.coordsEdit.setText(coords)
         self.canvas.unsetMapTool(self.clickTool)
         self.captureHeight(point)
 
+
     def captureHeight(self, point):
-        projectCrs = QgsProject.instance().crs()
-        crsDest = QgsCoordinateReferenceSystem(2180)  # PL 1992
-        xform = QgsCoordinateTransform(projectCrs, crsDest, QgsProject.instance())
+        """
+        Funkcja na bazie odczytanego punktu zczytuje wysokość
+        """
+        
+        projectCrs = self.project.crs()
+        crsDest = QgsCoordinateReferenceSystem("EPSG:2180")  # PL 1992
+        xform = QgsCoordinateTransform(projectCrs, crsDest, self.project)
         point1992 = xform.transform(point)
         h = NmtAPI.getHbyXY(y=point1992.x(), x=point1992.y())
         if h is None:
             #błąd usługi lub brak połączenia z internetem
             self.iface.messageBar().pushMessage("Błąd usługi:",
                                                 'Brak połączenia z serwerem, sprawdź czy działa połączenie z internetem',
-                                                level=Qgis.Critical, duration=10)
+                                                level=Qgis.Critical, 
+                                                duration=10)
         else:
             self.dockwidget.heightEdit.setText(h)
