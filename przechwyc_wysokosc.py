@@ -8,7 +8,7 @@
                               -------------------
         begin                : 2019-10-15
         git sha              : $Format:%H$
-        copyright            : (C) 2019 by EnviroSolutions Sp. z o.o. - Michał Włoga
+        copyright            : (C) 2019 by EnviroSolutions Sp. z o.o.
         email                : office@envirosolutions.pl
  ***************************************************************************/
 
@@ -36,7 +36,7 @@ import os.path
 from .nmt_api import NmtAPI
 
 """Wersja wtyczki"""
-plugin_version = '1.3'
+plugin_version = '1.3.1'
 plugin_name = 'Przechwyć Wysokość'
 
 class PrzechwycWysokosc:
@@ -186,7 +186,7 @@ class PrzechwycWysokosc:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
-        icon_path = ':/plugins/przechwyc_wysokosc/icon_pw2.png'
+        icon_path = ':/plugins/przechwyc_wysokosc/icons/icon_pw2.png'
         self.add_action(
             icon_path,
             text=self.tr(u'Przechwyć Wysokość'),
@@ -249,6 +249,7 @@ class PrzechwycWysokosc:
             self.dockwidget.closingPlugin.connect(self.onClosePlugin)
 
             # informacje o wersji
+            self.dockwidget.setWindowTitle('%s %s' % (plugin_name, plugin_version))
             self.dockwidget.lbl_pluginVersion.setText('%s %s' % (plugin_name, plugin_version))
 
             # show the dockwidget
@@ -277,7 +278,7 @@ class PrzechwycWysokosc:
 
     def captureHeight(self, point):
         projectCrs = QgsProject.instance().crs()
-        crsDest = QgsCoordinateReferenceSystem(2180)  # PL 1992
+        crsDest = QgsCoordinateReferenceSystem("EPSG:2180")  # PL 1992
         xform = QgsCoordinateTransform(projectCrs, crsDest, QgsProject.instance())
         point1992 = xform.transform(point)
         h = NmtAPI.getHbyXY(y=point1992.x(), x=point1992.y())
