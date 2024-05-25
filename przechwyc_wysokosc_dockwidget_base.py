@@ -134,8 +134,8 @@ class Ui_PrzechwycWysokoscDockWidgetBase(object):
         self.label.setText(_translate("PrzechwycWysokoscDockWidgetBase", "<html><head/><body><p align=\"center\">Wtyczka pozwala<br/>na sprawdzenie wysokości terenu<br/>na podstawie API NMT<br/>udostępnianego przez GUGiK.</p></body></html>"))
         self.label_2.setText(_translate("PrzechwycWysokoscDockWidgetBase", "Współrzędne:"))
         self.copyButton.setText(_translate("PrzechwycWysokoscDockWidgetBase", "Kopiuj do schowka"))
-        self.lbl_email.setText(_translate("PrzechwycWysokoscDockWidgetBase", "<a href=\"mailto:office@envirosolutions.pl\">office@envirosolutions.pl</a>"))
-        self.lbl_copyrights.setText(_translate("PrzechwycWysokoscDockWidgetBase", "© 2019 <a href=\"http://www.envirosolutions.pl/\">EnviroSolutions Sp. z o.o.</a>"))
+        self.lbl_email.setText(_translate("PrzechwycWysokoscDockWidgetBase", "<html><head/><body><p><a href=\"mailto:office@envirosolutions.pl\"><span style=\" text-decoration: underline; color:#0000ff;\">ZAPRASZAMY DO WSPÓŁPRACY</span></a></p></body></html>"))
+        self.lbl_copyrights.setText(_translate("PrzechwycWysokoscDockWidgetBase", "<html><head/><body><p>© 2024 <a href=\"http://www.envirosolutions.pl/\"><span style=\" text-decoration: underline; color:#0000ff;\">EnviroSolutions Sp. z o.o.</span></a></p></body></html>"))
         self.lbl_pluginVersion.setText(_translate("PrzechwycWysokoscDockWidgetBase", "Przechwyć Wysokość 1.0"))
 import resources_rc
 
