@@ -36,7 +36,7 @@ tags=python, nmt, dem, GUGiK, wysokości, level, poziom, EnviroSolutions, wysoko
 
 homepage=https://github.com/envirosolutionspl/nmt_gugik
 category=Plugins
-icon=/icons/icon_pw2.png
+icon=icons/icon_pw2.png
 # experimental flag
 experimental=False
 
