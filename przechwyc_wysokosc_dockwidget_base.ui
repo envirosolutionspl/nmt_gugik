@@ -155,7 +155,7 @@
          <string/>
         </property>
         <property name="pixmap">
-         <pixmap resource="resources.qrc">:/plugins/przechwyc_wysokosc/icons/icon_pw2.png</pixmap>
+         <pixmap resource="resources.qrc">:/plugins/przechwyc_wysokosc/icons/icon_pw.svg</pixmap>
         </property>
         <property name="scaledContents">
          <bool>true</bool>
