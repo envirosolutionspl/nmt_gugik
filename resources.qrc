@@ -2,6 +2,6 @@
   <qresource prefix="/plugins/przechwyc_wysokosc">
     <file>icons/icon.png</file>
     <file>icons/icon_pw2.png</file>
-    <file>icons/logo.png</file>
+    <file>icons/logo.svg</file>
   </qresource>
 </RCC>

@@ -111,7 +111,7 @@ class Ui_PrzechwycWysokoscDockWidgetBase(object):
         self.label_5 = QtWidgets.QLabel(self.dockWidgetContents)
         self.label_5.setMaximumSize(QtCore.QSize(40, 40))
         self.label_5.setText("")
-        self.label_5.setPixmap(QtGui.QPixmap(":/plugins/przechwyc_wysokosc/icons/logo.png"))
+        self.label_5.setPixmap(QtGui.QPixmap(":/plugins/przechwyc_wysokosc/icons/logo.svg"))
         self.label_5.setScaledContents(True)
         self.label_5.setObjectName("label_5")
         self.horizontalLayout_3.addWidget(self.label_5)
