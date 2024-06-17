@@ -36,7 +36,7 @@ import os.path
 from .nmt_api import NmtAPI
 
 """Wersja wtyczki"""
-plugin_version = '1.3.2'
+plugin_version = '1.3.3'
 plugin_name = 'Przechwyć Wysokość'
 
 
@@ -191,7 +191,7 @@ class PrzechwycWysokosc:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
-        icon_path = ':/plugins/przechwyc_wysokosc/icons/icon_pw2.png'
+        icon_path = ':/plugins/przechwyc_wysokosc/icons/icon_pw.svg'
         self.add_action(
             icon_path,
             text=self.tr(u'Przechwyć Wysokość'),
