@@ -56,6 +56,8 @@ icon=icons/icon_pw.svg
 # experimental flag
 experimental=False
 
+supportsQt6=True
+
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False
 
