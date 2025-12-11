@@ -272,7 +272,7 @@ class PrzechwycWysokosc:
 
             # show the dockwidget
             # TODO: fix to allow choice of dock location
-            self.iface.addDockWidget(Qt.LeftDockWidgetArea, self.dockwidget)
+            self.iface.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.dockwidget)
             self.dockwidget.show()
 
     def showBranchSelectionDialog(self):
@@ -298,9 +298,11 @@ class PrzechwycWysokosc:
         """
         
         cb = QApplication.clipboard()
-        cb.clear(mode=cb.Clipboard)
-        cb.setText("(%s, %s)" % (self.dockwidget.coordsEdit.text(),
-                                 self.dockwidget.heightEdit.text()), mode=cb.Clipboard)
+        cb.clear() 
+        cb.setText("(%s, %s)" % (
+            self.dockwidget.coordsEdit.text(),
+            self.dockwidget.heightEdit.text()
+        )) 
         self.iface.messageBar().pushMessage("Sukces:",
                                             'Skopiowano współrzedne x,y,h do schowka',
                                             level=Qgis.Success, duration=3)
