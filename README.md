@@ -15,6 +15,9 @@ Wtyczka QGIS pozwalająca na sprawdzanie wysokości terenu w danym punkcie na ob
 * Współrzędne są w układzie PUWG92.
 * Dane o wysokości można skopiować, naciskając przycisk "Kopiuj do schowka". Będą skopiowane według szablonu (współrzędna x, współrzędna y, wysokość).
 
+
+Wtyczka nie wymaga danych do działania. 
+
 ## EN
 A QGIS plugin that allows checking the terrain elevation at a given point in Poland. It operates based on data from the NMT database, provided by the Head Office of Geodesy and Cartography.
 
@@ -29,3 +32,5 @@ A QGIS plugin that allows checking the terrain elevation at a given point in Pol
 * To obtain the terrain elevation, press the "Przechwytuj" button and click anywhere on the map within Poland.
 * The coordinates are in the PUWG92 system.
 * Elevation data can be copied by pressing the "Kopiuj do schowka" button. They will be copied in the format (coordinate x, coordinate y, elevation).
+
+The plugin does not require any data to operate. 
