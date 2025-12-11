@@ -3,7 +3,7 @@
 # This file should be included when you package your plugin.# Mandatory items:
 
 [general]
-name=Przechwyć Wysokość GUGiK NMT API
+name=Przechwyć Wysokość GUGiK
 qgisMinimumVersion=3.28
 description=Pozwala na sprawdzenie wysokości terenu w danym punkcie na podstawie API GUGiK NMT. EN: Allows user to check elevation level of the terrain (Poland only) based on GUGiK's NMT service
 version=1.4.0

@@ -128,7 +128,7 @@ class Ui_PrzechwycWysokoscDockWidgetBase(object):
 
     def retranslateUi(self, PrzechwycWysokoscDockWidgetBase):
         _translate = QtCore.QCoreApplication.translate
-        PrzechwycWysokoscDockWidgetBase.setWindowTitle(_translate("PrzechwycWysokoscDockWidgetBase", "Przechwyć Wysokość GUGiK NMT API"))
+        PrzechwycWysokoscDockWidgetBase.setWindowTitle(_translate("PrzechwycWysokoscDockWidgetBase", "Przechwyć Wysokość GUGiK"))
         self.label_3.setText(_translate("PrzechwycWysokoscDockWidgetBase", "Wysokość:"))
         self.captureButton.setText(_translate("PrzechwycWysokoscDockWidgetBase", "Przechwytuj"))
         self.label.setText(_translate("PrzechwycWysokoscDockWidgetBase", "<html><head/><body><p align=\"center\">Wtyczka pozwala<br/>na sprawdzenie wysokości terenu<br/>na podstawie API NMT<br/>udostępnianego przez GUGiK.</p></body></html>"))
