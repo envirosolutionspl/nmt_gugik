@@ -15,6 +15,7 @@ Wtyczka QGIS pozwalająca na sprawdzanie wysokości terenu w danym punkcie na ob
 * Współrzędne są w układzie PUWG92.
 * Dane o wysokości można skopiować, naciskając przycisk "Kopiuj do schowka". Będą skopiowane według szablonu (współrzędna x, współrzędna y, wysokość).
 
+![gif_nmt](https://github.com/user-attachments/assets/0f22f824-5d00-4cb3-bc67-af40ec4335cf)
 
 Wtyczka nie wymaga danych do działania. 
 
