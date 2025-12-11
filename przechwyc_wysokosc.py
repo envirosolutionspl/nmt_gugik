@@ -24,7 +24,7 @@
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, Qt
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QToolBar, QApplication, QShortcut, QWidget, QLabel, QDialog, QComboBox
-from PyQt5 import uic
+from qgis.PyQt import uic
 from qgis.gui import QgsMapToolEmitPoint
 from qgis.core import QgsProject, QgsCoordinateReferenceSystem, QgsCoordinateTransform, Qgis, QgsSettings
 from .qgis_feed import QgisFeedDialog
