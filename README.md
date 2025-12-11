@@ -19,6 +19,9 @@ Wtyczka QGIS pozwalająca na sprawdzanie wysokości terenu w danym punkcie na ob
 
 Wtyczka nie wymaga danych do działania. 
 
+### Uwaga:
+* Zalecane jest korzystanie ze stabilnej wersji QGIS, rekomendowana wersja to 3.40.13
+
 ## EN
 A QGIS plugin that allows checking the terrain elevation at a given point in Poland. It operates based on data from the NMT database, provided by the Head Office of Geodesy and Cartography.
 
@@ -35,3 +38,6 @@ A QGIS plugin that allows checking the terrain elevation at a given point in Pol
 * Elevation data can be copied by pressing the "Kopiuj do schowka" button. They will be copied in the format (coordinate x, coordinate y, elevation).
 
 The plugin does not require any data to operate. 
+
+### Note:
+* It is recommended to use a stable version of QGIS, the suggested version is 3.40.13.

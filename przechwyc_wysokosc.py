@@ -8,7 +8,7 @@
                               -------------------
         begin                : 2019-10-15
         git sha              : $Format:%H$
-        copyright            : (C) 2019 by EnviroSolutions Sp. z o.o.
+        copyright            : (C) 2025 by EnviroSolutions Sp. z o.o.
         email                : office@envirosolutions.pl
  ***************************************************************************/
 
@@ -38,8 +38,8 @@ import os.path
 from .nmt_api import NmtAPI
 
 """Wersja wtyczki"""
-plugin_version = '1.3.6'
-plugin_name = 'Przechwyć Wysokość'
+from . import PLUGIN_VERSION as plugin_version
+from . import PLUGIN_NAME as plugin_name
 
 
 class PrzechwycWysokosc:
