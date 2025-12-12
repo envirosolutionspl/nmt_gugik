@@ -4,10 +4,10 @@ import unittest
 import time
 import os
 import sys
-from constants import PYTHONPATH, SLEEP_BETWEEN_REQUESTS, TEST_DATA_FILE
+from constants import SLEEP_BETWEEN_REQUESTS, TEST_DATA_FILE
 
 # ścieżka
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), PYTHONPATH))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".." ))
 
 from nmt_api import NmtAPI
 
