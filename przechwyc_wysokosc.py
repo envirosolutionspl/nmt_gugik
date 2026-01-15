@@ -95,7 +95,7 @@ class PrzechwycWysokosc:
         self.project = QgsProject.instance()
         self.canvas = self.iface.mapCanvas()
         self.clickTool = QgsMapToolEmitPoint(self.canvas)
-        self.clickTool.canvasClicked.connect(self.canvasClicked)
+        self.clickTool.handlePointCoordinates.connect(self.handlePointCoordinates)
         # --------------------------------------------------------------------------
 
     def tr(self, message):
@@ -283,7 +283,7 @@ class PrzechwycWysokosc:
                                             level=Qgis.Success, duration=3)
 
 
-    def canvasClicked(self, point):
+    def handlePointCoordinates(self, point):
         """
         Funkcja odpowiadająca za ściągnięcie współrzędnych dla klikniętego punktu na mapie
         """
