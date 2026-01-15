@@ -20,4 +20,4 @@ INDUSTRIES = {
     "n": "Nieruchomości"
 }
 
-NMT_SERVICE_URL = "http://services.gugik.gov.pl/nmt/"
+NMT_SERVICE_URL = "https://services.gugik.gov.pl/nmt/"
