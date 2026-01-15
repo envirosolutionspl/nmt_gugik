@@ -19,3 +19,5 @@ INDUSTRIES = {
     "it": "IT",
     "n": "Nieruchomości"
 }
+
+NMT_SERVICE_URL = "https://services.gugik.gov.pl/nmt/"
