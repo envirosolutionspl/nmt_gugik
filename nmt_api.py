@@ -1,7 +1,7 @@
 from qgis.core import QgsNetworkAccessManager
 from qgis.PyQt.QtCore import QUrl, QUrlQuery, QEventLoop
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
-from constants import NMT_SERVICE_URL
+from .constants import NMT_SERVICE_URL
 
 class NmtAPI:
 
