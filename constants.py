@@ -21,3 +21,5 @@ INDUSTRIES = {
 }
 
 NMT_SERVICE_URL = "https://services.gugik.gov.pl/nmt/"
+
+PLUGIN_ICON = './icons/icon.svg'

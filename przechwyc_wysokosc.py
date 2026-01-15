@@ -37,6 +37,7 @@ from .resources import *
 from .przechwyc_wysokosc_dockwidget import PrzechwycWysokoscDockWidget
 import os.path
 from .nmt_api import NmtAPI
+from .utils import QgsTools
 
 """Wersja wtyczki"""
 from . import PLUGIN_VERSION as plugin_version
@@ -107,6 +108,7 @@ class PrzechwycWysokosc:
         # out click tool will emit a QgsPoint on every click
         self.clickTool = QgsMapToolEmitPoint(self.canvas)
         self.clickTool.canvasClicked.connect(self.canvasClicked)
+        self.tools = QgsTools(self.iface)
         # --------------------------------------------------------------------------
 
 
@@ -309,9 +311,8 @@ class PrzechwycWysokosc:
             self.dockwidget.coordsEdit.text(),
             self.dockwidget.heightEdit.text()
         )) 
-        self.iface.messageBar().pushMessage("Sukces:",
-                                            'Skopiowano współrzedne x,y,h do schowka',
-                                            level=Qgis.Success, duration=3)
+        self.tools.pushMessage("Skopiowano współrzedne x,y,h do schowka")
+
 
 
     def canvasClicked(self, point):
@@ -338,9 +339,6 @@ class PrzechwycWysokosc:
         h = NmtAPI.getHbyXY(y=point1992.x(), x=point1992.y())
         if h is None:
             #błąd usługi lub brak połączenia z internetem
-            self.iface.messageBar().pushMessage("Błąd usługi:",
-                                                'Brak połączenia z serwerem, sprawdź czy działa połączenie z internetem',
-                                                level=Qgis.Critical, 
-                                                duration=10)
+            self.tools.pushCritical("Brak połączenia z serwerem, sprawdź czy działa połączenie z internetem")
         else:
             self.dockwidget.heightEdit.setText(h)
