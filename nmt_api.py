@@ -1,11 +1,11 @@
 from qgis.core import QgsNetworkAccessManager
 from PyQt5.QtCore import QUrl, QUrlQuery, QEventLoop
 from PyQt5.QtNetwork import QNetworkRequest, QNetworkReply
-
+from constants import NMT_SERVICE_URL
 
 class NmtAPI:
 
-    URL = "http://services.gugik.gov.pl/nmt/"
+    URL = NMT_SERVICE_URL
 
     @staticmethod
     def getRequest(PARAMS):
