@@ -33,6 +33,7 @@ from .resources import *
 from .przechwyc_wysokosc_dockwidget import PrzechwycWysokoscDockWidget
 import os.path
 from .nmt_api import NmtAPI
+from .constants import EPSG
 
 """Wersja wtyczki"""
 from . import PLUGIN_VERSION as plugin_version
@@ -300,7 +301,7 @@ class PrzechwycWysokosc:
         """
         
         projectCrs = self.project.crs()
-        crsDest = QgsCoordinateReferenceSystem("EPSG:2180")  # PL 1992
+        crsDest = QgsCoordinateReferenceSystem(f"EPSG:{EPSG}")  # PL 1992
         xform = QgsCoordinateTransform(projectCrs, crsDest, self.project)
         point1992 = xform.transform(point)
         h = NmtAPI.getHbyXY(y=point1992.x(), x=point1992.y())
