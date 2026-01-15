@@ -1,7 +1,14 @@
 from qgis.core import QgsNetworkAccessManager
 from qgis.PyQt.QtCore import QUrl, QUrlQuery, QEventLoop
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
+from qgis.PyQt.QtWidgets import QDialog
 from .constants import NMT_SERVICE_URL
+
+if not hasattr(QEventLoop, 'exec'):
+    QEventLoop.exec = QEventLoop.exec_
+
+if not hasattr(QDialog, 'exec'):
+    QDialog.exec = QDialog.exec_
 
 class NmtAPI:
 
@@ -21,7 +28,7 @@ class NmtAPI:
         reply = manager.get(request)
         loop = QEventLoop()
         reply.finished.connect(loop.quit)
-        loop.exec_()
+        loop.exec()
 
         if reply.error() == QNetworkReply.NoError:
             data = reply.readAll().data().decode("utf-8")
