@@ -106,7 +106,7 @@ class PrzechwycWysokosc:
         self.canvas = self.iface.mapCanvas()
         # out click tool will emit a QgsPoint on every click
         self.clickTool = QgsMapToolEmitPoint(self.canvas)
-        self.clickTool.canvasClicked.connect(self.canvas_clicked)
+        self.clickTool.canvasClicked.connect(self.canvasClicked)
         # --------------------------------------------------------------------------
 
 
@@ -126,7 +126,7 @@ class PrzechwycWysokosc:
         return QCoreApplication.translate('PrzechwycWysokosc', message)
 
 
-    def add_action(
+    def addAction(
         self,
         icon_path,
         text,
@@ -205,7 +205,7 @@ class PrzechwycWysokosc:
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
         icon_path = ':/plugins/przechwyc_wysokosc/icons/icon_pw.svg'
-        self.add_action(
+        self.addAction(
             icon_path,
             text=self.tr(u'Przechwyć Wysokość'),
             callback=self.run,
@@ -262,8 +262,8 @@ class PrzechwycWysokosc:
                 self.dockwidget = PrzechwycWysokoscDockWidget()
 
             # Eventy
-            self.dockwidget.captureButton.clicked.connect(self.captureButton_clicked)
-            self.dockwidget.copyButton.clicked.connect(self.copyButton_clicked)
+            self.dockwidget.captureButton.clicked.connect(self.captureButtonClicked)
+            self.dockwidget.copyButton.clicked.connect(self.copyButtonClicked)
             # connect to provide cleanup on closing of dockwidget
             self.dockwidget.closingPlugin.connect(self.onClosePlugin)
 
@@ -291,14 +291,14 @@ class PrzechwycWysokosc:
             self.settings.setValue("selected_industry", self.selected_branch)  
             self.settings.setValue("showDialog", False) 
 
-    def captureButton_clicked(self):
+    def captureButtonClicked(self):
         """
         Funkcja uaktywnia funkcjonalność klikania na mapie punktu po kliknięciu przycisku 'Przechwytuj'
         """
         self.canvas.setMapTool(self.clickTool)
 
 
-    def copyButton_clicked(self):
+    def copyButtonClicked(self):
         """
         Funkcja kopiuje zczytane współrzędne do schowka
         """
@@ -314,7 +314,7 @@ class PrzechwycWysokosc:
                                             level=Qgis.Success, duration=3)
 
 
-    def canvas_clicked(self, point):
+    def canvasClicked(self, point):
         """
         Funkcja odpowiadająca za ściągnięcie współrzędnych dla klikniętego punktu na mapie
         """
