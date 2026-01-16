@@ -34,6 +34,7 @@ from .przechwyc_wysokosc_dockwidget import PrzechwycWysokoscDockWidget
 import os.path
 from .nmt_api import NmtAPI
 from .constants import EPSG
+from .utils import QgsTools
 
 """Wersja wtyczki"""
 from . import PLUGIN_VERSION as plugin_version
@@ -96,6 +97,7 @@ class PrzechwycWysokosc:
         self.canvas = self.iface.mapCanvas()
         self.clickTool = QgsMapToolEmitPoint(self.canvas)
         self.clickTool.handlePointCoordinates.connect(self.handlePointCoordinates)
+        self.tools = QgsTools(self.iface)
         # --------------------------------------------------------------------------
 
     def tr(self, message):
@@ -265,6 +267,7 @@ class PrzechwycWysokosc:
         Funkcja uaktywnia funkcjonalność klikania na mapie punktu po kliknięciu przycisku 'Przechwytuj'
         """
         self.canvas.setMapTool(self.clickTool)
+        self.tools.pushLogInfo("Aktywowano funkcjonalność przechwytywania punktu")
 
 
     def copyButtonClicked(self):
@@ -278,9 +281,10 @@ class PrzechwycWysokosc:
             self.dockwidget.coordsEdit.text(),
             self.dockwidget.heightEdit.text()
         )) 
-        self.iface.messageBar().pushMessage("Sukces:",
-                                            'Skopiowano współrzedne x,y,h do schowka',
-                                            level=Qgis.Success, duration=3)
+        self.tools.pushMessage("Skopiowano współrzedne x,y,h do schowka")
+        self.tools.pushLogInfo("Skopiowano współrzedne x,y,h do schowka")
+
+
 
 
     def handlePointCoordinates(self, point):
@@ -293,6 +297,7 @@ class PrzechwycWysokosc:
         self.dockwidget.coordsEdit.setText(coords)
         self.canvas.unsetMapTool(self.clickTool)
         self.captureHeight(point)
+        self.tools.pushLogInfo("Odczytano współrzędne dla punktu")
 
 
     def captureHeight(self, point):
@@ -307,9 +312,8 @@ class PrzechwycWysokosc:
         h = NmtAPI.getHbyXY(y=point1992.x(), x=point1992.y())
         if h is None:
             #błąd usługi lub brak połączenia z internetem
-            self.iface.messageBar().pushMessage("Błąd usługi:",
-                                                'Brak połączenia z serwerem, sprawdź czy działa połączenie z internetem',
-                                                level=Qgis.Critical, 
-                                                duration=10)
+            self.tools.pushCritical("Brak połączenia z serwerem, sprawdź czy działa połączenie z internetem")
+            self.tools.pushLogCritical("Brak połączenia z serwerem, sprawdź czy działa połączenie z internetem")
         else:
             self.dockwidget.heightEdit.setText(h)
+            self.tools.pushLogInfo("Odczytano wysokość dla punktu")
