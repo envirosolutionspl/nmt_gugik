@@ -298,6 +298,7 @@ class PrzechwycWysokosc:
         Funkcja uaktywnia funkcjonalność klikania na mapie punktu po kliknięciu przycisku 'Przechwytuj'
         """
         self.canvas.setMapTool(self.clickTool)
+        self.tools.pushLogInfo("Aktywowano funkcjonalność przechwytywania punktu")
 
 
     def copyButtonClicked(self):
@@ -327,6 +328,7 @@ class PrzechwycWysokosc:
         self.dockwidget.coordsEdit.setText(coords)
         self.canvas.unsetMapTool(self.clickTool)
         self.captureHeight(point)
+        self.tools.pushLogInfo("Odczytano współrzędne dla punktu")
 
 
     def captureHeight(self, point):
@@ -345,3 +347,4 @@ class PrzechwycWysokosc:
             self.tools.pushLogCritical("Brak połączenia z serwerem, sprawdź czy działa połączenie z internetem")
         else:
             self.dockwidget.heightEdit.setText(h)
+            self.tools.pushLogInfo("Odczytano wysokość dla punktu")
