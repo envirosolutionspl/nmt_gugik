@@ -312,6 +312,8 @@ class PrzechwycWysokosc:
             self.dockwidget.heightEdit.text()
         )) 
         self.tools.pushMessage("Skopiowano współrzedne x,y,h do schowka")
+        self.tools.pushLogInfo("Skopiowano współrzedne x,y,h do schowka")
+
 
 
 
@@ -340,5 +342,6 @@ class PrzechwycWysokosc:
         if h is None:
             #błąd usługi lub brak połączenia z internetem
             self.tools.pushCritical("Brak połączenia z serwerem, sprawdź czy działa połączenie z internetem")
+            self.tools.pushLogCritical("Brak połączenia z serwerem, sprawdź czy działa połączenie z internetem")
         else:
             self.dockwidget.heightEdit.setText(h)

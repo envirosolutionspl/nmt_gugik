@@ -59,15 +59,15 @@ class QgsTools:
         )
     @staticmethod
     def pushLogInfo(message: str) -> None:
-        QgsMessageLog.logMessage(message, tag=QgsTools.default_tag, level=Qgis.Info)
+        QgsMessageLog.logMessage(message, tag=PLUGIN_NAME, level=Qgis.Info)
 
     @staticmethod
     def pushLogWarning(message: str) -> None:
-        QgsMessageLog.logMessage(message, tag=QgsTools.default_tag, level=Qgis.Warning)
+        QgsMessageLog.logMessage(message, tag=PLUGIN_NAME, level=Qgis.Warning)
 
     @staticmethod
     def pushLogCritical(message: str) -> None:
-        QgsMessageLog.logMessage(message, tag=QgsTools.default_tag, level=Qgis.Critical)
+        QgsMessageLog.logMessage(message, tag=PLUGIN_NAME, level=Qgis.Critical)
 
 
 def isCompatibleQtVersion(cur_version, tar_version):
