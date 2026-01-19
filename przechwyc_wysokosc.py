@@ -96,7 +96,7 @@ class PrzechwycWysokosc:
         self.project = QgsProject.instance()
         self.canvas = self.iface.mapCanvas()
         self.clickTool = QgsMapToolEmitPoint(self.canvas)
-        self.clickTool.handlePointCoordinates.connect(self.handlePointCoordinates)
+        self.clickTool.canvasClicked.connect(self.handlePointCoordinates)
         self.tools = QgsTools(self.iface)
         # --------------------------------------------------------------------------
 
