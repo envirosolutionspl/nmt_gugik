@@ -1,6 +1,8 @@
-from qgis._core import QgsMessageLog, Qgis
+from qgis._core import QgsMessageLog, Qgis, QgsNetworkAccessManager
 from qgis.PyQt.QtWidgets import QMessageBox
 from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtCore import QUrl, QUrlQuery, QEventLoop
+from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
 from .constants import PLUGIN_ICON, QT_VER
 from . import PLUGIN_NAME
@@ -68,6 +70,66 @@ class QgsTools:
     @staticmethod
     def pushLogCritical(message: str) -> None:
         QgsMessageLog.logMessage(message, tag=PLUGIN_NAME, level=Qgis.Critical)
+
+class QgisNetworkClient:
+    """
+    Klasa pomocnicza do obsługi zapytań HTTP w środowisku QGIS / Qt.
+    Niezależna od konkretnego API.
+    """
+
+    @staticmethod
+    def buildUrl(base_url: str, params: dict) -> QUrl:
+        url = QUrl(base_url)
+        query = QUrlQuery()
+        for key, value in params.items():
+            query.addQueryItem(str(key), str(value))
+        url.setQuery(query)
+        return url
+
+    @staticmethod
+    def buildRequest(url: QUrl) -> QNetworkRequest:
+        request = QNetworkRequest(url)
+        if hasattr(QNetworkRequest, 'KnownHeaders'):
+            ua_header = QNetworkRequest.KnownHeaders.UserAgentHeader  # Qt6
+        else:
+            ua_header = QNetworkRequest.UserAgentHeader  # Qt5
+        request.setHeader(
+            ua_header, f"QGIS-Plugin-{PLUGIN_NAME}"
+        )
+        return request
+
+    @staticmethod
+    def sendRequest(request: QNetworkRequest) -> QNetworkReply:
+        manager = QgsNetworkAccessManager.instance()
+        reply = manager.get(request)
+        loop = QEventLoop()
+        reply.finished.connect(loop.quit)
+        loop.exec()
+        return reply
+
+    @staticmethod
+    def isSuccess(reply: QNetworkReply) -> bool:
+        if hasattr(QNetworkReply, 'NetworkError'):
+            no_err = QNetworkReply.NetworkError.NoError  # Qt6
+        else:
+            no_err = QNetworkReply.NoError  # Qt5
+        return reply.error() == no_err
+
+    @staticmethod
+    def readReply(reply: QNetworkReply) -> str:
+        data = reply.readAll().data().decode("utf-8")
+        reply.deleteLater()
+        return data
+    
+    @staticmethod
+    def getRequest(base_url: str, params: dict) -> str | None:
+        url = QgisNetworkClient.buildUrl(base_url, params)
+        request = QgisNetworkClient.buildRequest(url)
+        reply = QgisNetworkClient.sendRequest(request)
+        if QgisNetworkClient.isSuccess(reply):
+            return QgisNetworkClient.readReply(reply)
+        reply.deleteLater()
+        return None
 
 
 def isCompatibleQtVersion(cur_version, tar_version):
