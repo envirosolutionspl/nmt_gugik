@@ -76,6 +76,12 @@ class QgisNetworkClient:
     Klasa pomocnicza do obsługi zapytań HTTP w środowisku QGIS / Qt.
     Niezależna od konkretnego API.
     """
+    manager: QgsNetworkAccessManager | None = None
+
+    @classmethod
+    def initManager(cls):
+        if cls.manager is None:
+            cls.manager = QgsNetworkAccessManager.instance()
 
     @staticmethod
     def buildUrl(base_url: str, params: dict) -> QUrl:
@@ -98,10 +104,9 @@ class QgisNetworkClient:
         )
         return request
 
-    @staticmethod
-    def sendRequest(request: QNetworkRequest) -> QNetworkReply:
-        manager = QgsNetworkAccessManager.instance()
-        reply = manager.get(request)
+    @classmethod
+    def sendRequest(cls, request: QNetworkRequest) -> QNetworkReply:
+        reply = cls.manager.get(request)
         loop = QEventLoop()
         reply.finished.connect(loop.quit)
         loop.exec()
@@ -130,7 +135,6 @@ class QgisNetworkClient:
             return QgisNetworkClient.readReply(reply)
         reply.deleteLater()
         return None
-
 
 def isCompatibleQtVersion(cur_version, tar_version):
     return cur_version.startswith(QT_VER[tar_version])

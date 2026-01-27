@@ -34,7 +34,7 @@ from .przechwyc_wysokosc_dockwidget import PrzechwycWysokoscDockWidget
 import os.path
 from .nmt_api import NmtAPI
 from .constants import EPSG
-from .utils import QgsTools
+from .utils import QgsTools, QgisNetworkClient
 
 """Wersja wtyczki"""
 from . import PLUGIN_VERSION as plugin_version
@@ -98,6 +98,7 @@ class PrzechwycWysokosc:
         self.clickTool = QgsMapToolEmitPoint(self.canvas)
         self.clickTool.canvasClicked.connect(self.handlePointCoordinates)
         self.tools = QgsTools(self.iface)
+        QgisNetworkClient.initManager()
         # --------------------------------------------------------------------------
 
     def tr(self, message):
