@@ -96,7 +96,12 @@ class PrzechwycWysokosc:
         self.project = QgsProject.instance()
         self.canvas = self.iface.mapCanvas()
         self.clickTool = QgsMapToolEmitPoint(self.canvas)
-        self.clickTool.canvasClicked.connect(self.handlePointCoordinates)
+        self.clickTool.canvasClicked.connect(
+            lambda point: self.handlePointCoordinates(
+                point,
+                self.project.crs().authid()
+            )
+        )
         self.tools = QgsTools(self.iface)
         QgisNetworkClient.initManager()
         # --------------------------------------------------------------------------
@@ -288,7 +293,7 @@ class PrzechwycWysokosc:
 
 
 
-    def handlePointCoordinates(self, point):
+    def handlePointCoordinates(self, point, source_epsg: str):
         """
         Funkcja odpowiadająca za ściągnięcie współrzędnych dla klikniętego punktu na mapie
         """
@@ -297,18 +302,18 @@ class PrzechwycWysokosc:
 
         self.dockwidget.coordsEdit.setText(coords)
         self.canvas.unsetMapTool(self.clickTool)
-        self.captureHeight(point)
+        self.captureHeight(point, source_epsg)
         self.tools.pushLogInfo("Odczytano współrzędne dla punktu")
 
 
-    def captureHeight(self, point):
+    def captureHeight(self, point, source_epsg: str):
         """
         Funkcja na bazie odczytanego punktu zczytuje wysokość
         """
-        
-        projectCrs = self.project.crs()
-        crsDest = QgsCoordinateReferenceSystem(f"EPSG:{EPSG}")  # PL 1992
-        xform = QgsCoordinateTransform(projectCrs, crsDest, self.project)
+
+        crsSource = QgsCoordinateReferenceSystem(source_epsg)
+        crsDest = QgsCoordinateReferenceSystem(f"EPSG:{EPSG}") 
+        xform = QgsCoordinateTransform(crsSource, crsDest, self.project)
         point1992 = xform.transform(point)
         h = NmtAPI.getHbyXY(y=point1992.x(), x=point1992.y())
         if h is None:
