@@ -29,15 +29,12 @@ from qgis.gui import QgsMapToolEmitPoint
 from qgis.core import QgsProject, QgsCoordinateReferenceSystem, QgsCoordinateTransform, Qgis, QgsSettings
 from .qgis_feed import QgisFeedDialog
 from .utils import isCompatibleQtVersion
-
-# Initialize Qt resources from file resources.py
 from .resources import *
-
-# Import the code for the DockWidget
 from .przechwyc_wysokosc_dockwidget import PrzechwycWysokoscDockWidget
 import os.path
 from .nmt_api import NmtAPI
-from .utils import QgsTools
+from .constants import EPSG
+from .utils import QgsTools, QgisNetworkClient
 
 """Wersja wtyczki"""
 from . import PLUGIN_VERSION as plugin_version
@@ -45,7 +42,7 @@ from . import PLUGIN_NAME as plugin_name
 
 
 class PrzechwycWysokosc:
-    """QGIS Plugin Implementation."""
+    """Wdrożenie wtyczki QGIS."""
 
     def __init__(self, iface):
         """Constructor.
@@ -71,12 +68,9 @@ class PrzechwycWysokosc:
             self.feed = QgisFeed(selected_industry=select_indust_session, plugin_name=plugin_name)
             self.feed.initFeed()
 
-        # Save reference to the QGIS interface
         self.iface = iface
-        # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
 
-        # initialize locale
         locale = QSettings().value('locale/userLocale')[0:2]
         locale_path = os.path.join(
             self.plugin_dir,
@@ -88,31 +82,30 @@ class PrzechwycWysokosc:
             self.translator.load(locale_path)
             QCoreApplication.installTranslator(self.translator)
 
-        # Declare instance attributes
         self.actions = []
         self.menu = self.tr(u'&EnviroSolutions')
-        # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.mainWindow().findChild(QToolBar, 'EnviroSolutions')
 
         if not self.toolbar:
             self.toolbar = self.iface.addToolBar(u'EnviroSolutions')
             self.toolbar.setObjectName(u'EnviroSolutions')
 
-        #print "** INITIALIZING PrzechwycWysokosc"
-
         self.pluginIsActive = False
         self.dockwidget = None
         
         self.project = QgsProject.instance()
         self.canvas = self.iface.mapCanvas()
-        # out click tool will emit a QgsPoint on every click
         self.clickTool = QgsMapToolEmitPoint(self.canvas)
-        self.clickTool.canvasClicked.connect(self.canvasClicked)
+        self.clickTool.canvasClicked.connect(
+            lambda point: self.handlePointCoordinates(
+                point,
+                self.project.crs().authid()
+            )
+        )
         self.tools = QgsTools(self.iface)
+        self.network_manager = QgisNetworkClient()
         # --------------------------------------------------------------------------
 
-
-    # noinspection PyMethodMayBeStatic
     def tr(self, message):
         """Get the translation for a string using Qt translation API.
 
@@ -217,33 +210,18 @@ class PrzechwycWysokosc:
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dockwidget is closed"""
 
-        #print "** CLOSING PrzechwycWysokosc"
-
-        # disconnects
         self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
-
-        # remove this statement if dockwidget is to remain
-        # for reuse if plugin is reopened
-        # Commented next statement since it causes QGIS crashe
-        # when closing the docked window:
-        # self.dockwidget = None
-
         self.pluginIsActive = False
 
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
 
-        #print "** UNLOAD PrzechwycWysokosc"
-
         for action in self.actions:
             self.iface.removePluginMenu(
                 self.tr(u'&EnviroSolutions'),
                 action)
-            #self.iface.removeToolBarIcon(action)
             self.toolbar.removeAction(action)
-
-        # remove the toolbar
         del self.toolbar
 
 
@@ -266,15 +244,12 @@ class PrzechwycWysokosc:
             # Eventy
             self.dockwidget.captureButton.clicked.connect(self.captureButtonClicked)
             self.dockwidget.copyButton.clicked.connect(self.copyButtonClicked)
-            # connect to provide cleanup on closing of dockwidget
             self.dockwidget.closingPlugin.connect(self.onClosePlugin)
 
             # informacje o wersji
             self.dockwidget.setWindowTitle('%s %s' % (plugin_name, plugin_version))
             self.dockwidget.lbl_pluginVersion.setText('%s %s' % (plugin_name, plugin_version))
 
-            # show the dockwidget
-            # TODO: fix to allow choice of dock location
             if isCompatibleQtVersion(QT_VERSION_STR, 6):
                 dock_location = Qt.DockWidgetArea.LeftDockWidgetArea
             else:
@@ -300,7 +275,6 @@ class PrzechwycWysokosc:
         self.canvas.setMapTool(self.clickTool)
         self.tools.pushLogInfo("Aktywowano funkcjonalność przechwytywania punktu")
 
-
     def copyButtonClicked(self):
         """
         Funkcja kopiuje zczytane współrzędne do schowka
@@ -315,10 +289,7 @@ class PrzechwycWysokosc:
         self.tools.pushMessage("Skopiowano współrzedne x,y,h do schowka")
         self.tools.pushLogInfo("Skopiowano współrzedne x,y,h do schowka")
 
-
-
-
-    def canvasClicked(self, point):
+    def handlePointCoordinates(self, point, source_epsg: str):
         """
         Funkcja odpowiadająca za ściągnięcie współrzędnych dla klikniętego punktu na mapie
         """
@@ -327,20 +298,19 @@ class PrzechwycWysokosc:
 
         self.dockwidget.coordsEdit.setText(coords)
         self.canvas.unsetMapTool(self.clickTool)
-        self.captureHeight(point)
+        self.captureHeight(point, source_epsg)
         self.tools.pushLogInfo("Odczytano współrzędne dla punktu")
 
-
-    def captureHeight(self, point):
+    def captureHeight(self, point, source_epsg: str):
         """
         Funkcja na bazie odczytanego punktu zczytuje wysokość
         """
-        
-        projectCrs = self.project.crs()
-        crsDest = QgsCoordinateReferenceSystem("EPSG:2180")  # PL 1992
-        xform = QgsCoordinateTransform(projectCrs, crsDest, self.project)
+
+        crsSource = QgsCoordinateReferenceSystem(source_epsg)
+        crsDest = QgsCoordinateReferenceSystem(f"EPSG:{EPSG}") 
+        xform = QgsCoordinateTransform(crsSource, crsDest, self.project)
         point1992 = xform.transform(point)
-        h = NmtAPI.getHbyXY(y=point1992.x(), x=point1992.y())
+        h = NmtAPI.getHbyXY(y=point1992.x(), x=point1992.y(),network_client=self.network_manager)
         if h is None:
             #błąd usługi lub brak połączenia z internetem
             self.tools.pushCritical("Brak połączenia z serwerem, sprawdź czy działa połączenie z internetem")

@@ -22,4 +22,6 @@ INDUSTRIES = {
 
 NMT_SERVICE_URL = "https://services.gugik.gov.pl/nmt/"
 
+EPSG = 2180
+
 PLUGIN_ICON = './icons/icon.svg'
