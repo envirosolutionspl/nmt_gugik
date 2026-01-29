@@ -103,7 +103,7 @@ class PrzechwycWysokosc:
             )
         )
         self.tools = QgsTools(self.iface)
-        QgisNetworkClient.initManager()
+        self.network_manager = QgisNetworkClient()
         # --------------------------------------------------------------------------
 
     def tr(self, message):
@@ -275,7 +275,6 @@ class PrzechwycWysokosc:
         self.canvas.setMapTool(self.clickTool)
         self.tools.pushLogInfo("Aktywowano funkcjonalność przechwytywania punktu")
 
-
     def copyButtonClicked(self):
         """
         Funkcja kopiuje zczytane współrzędne do schowka
@@ -290,9 +289,6 @@ class PrzechwycWysokosc:
         self.tools.pushMessage("Skopiowano współrzedne x,y,h do schowka")
         self.tools.pushLogInfo("Skopiowano współrzedne x,y,h do schowka")
 
-
-
-
     def handlePointCoordinates(self, point, source_epsg: str):
         """
         Funkcja odpowiadająca za ściągnięcie współrzędnych dla klikniętego punktu na mapie
@@ -305,7 +301,6 @@ class PrzechwycWysokosc:
         self.captureHeight(point, source_epsg)
         self.tools.pushLogInfo("Odczytano współrzędne dla punktu")
 
-
     def captureHeight(self, point, source_epsg: str):
         """
         Funkcja na bazie odczytanego punktu zczytuje wysokość
@@ -315,7 +310,7 @@ class PrzechwycWysokosc:
         crsDest = QgsCoordinateReferenceSystem(f"EPSG:{EPSG}") 
         xform = QgsCoordinateTransform(crsSource, crsDest, self.project)
         point1992 = xform.transform(point)
-        h = NmtAPI.getHbyXY(y=point1992.x(), x=point1992.y())
+        h = NmtAPI.getHbyXY(y=point1992.x(), x=point1992.y(),network_client=self.network_manager)
         if h is None:
             #błąd usługi lub brak połączenia z internetem
             self.tools.pushCritical("Brak połączenia z serwerem, sprawdź czy działa połączenie z internetem")
