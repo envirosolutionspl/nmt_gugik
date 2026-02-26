@@ -38,6 +38,8 @@ A QGIS plugin that allows checking the terrain elevation at a given point in Pol
 * The coordinates are in the PUWG92 system.
 * Elevation data can be copied by pressing the "Kopiuj do schowka" button. They will be copied in the format (coordinate x, coordinate y, elevation).
 
+![gif_nmt](https://github.com/user-attachments/assets/25e5fb76-1b06-47ee-b479-d8ed1c73c8a9)
+
 The plugin does not require any data to operate. 
 
 ### Note:
