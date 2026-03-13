@@ -16,6 +16,6 @@ class NmtAPI:
     URL = NMT_SERVICE_URL
 
     @staticmethod
-    def getHbyXY(x, y, network_client: QgisNetworkClient) -> str | None:
+    def getHbyXY(x, y, network_client: QgisNetworkClient) -> str or None:
         params = {'request': "GetHbyXY", 'x': x, 'y': y}
         return network_client.getRequest(NmtAPI.URL, params)

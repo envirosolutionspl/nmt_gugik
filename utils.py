@@ -118,7 +118,7 @@ class QgisNetworkClient:
         reply.deleteLater()
         return data
     
-    def getRequest(self, base_url: str, params: dict) -> str | None:
+    def getRequest(self, base_url: str, params: dict) -> str or None:
         url = self.buildUrl(base_url, params)
         request = self.buildRequest(url)
         reply = self.sendRequest(request)

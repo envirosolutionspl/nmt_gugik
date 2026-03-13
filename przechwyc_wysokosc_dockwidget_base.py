@@ -45,7 +45,7 @@ class Ui_PrzechwycWysokoscDockWidgetBase(object):
         font.setPointSize(8)
         self.label.setFont(font)
         self.label.setObjectName("label")
-        self.horizontalLayout.addWidget(self.label, 0, QtCore.Qt.AlignHCenter|QtCore.Qt.AlignVCenter)
+        self.horizontalLayout.addWidget(self.label, 0, QtCore.Qt.AlignHCenter or QtCore.Qt.AlignVCenter)
         self.gridLayout.addLayout(self.horizontalLayout, 1, 0, 1, 1)
         self.line_2 = QtWidgets.QFrame(self.dockWidgetContents)
         self.line_2.setFrameShape(QtWidgets.QFrame.HLine)
