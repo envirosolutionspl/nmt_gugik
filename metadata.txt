@@ -22,8 +22,10 @@ repository=https://github.com/envirosolutionspl/nmt_gugik
 hasProcessingProvider=no
 # Uncomment the following line and add your changelog:
 changelog=
-  Wersja 1.4.2
-  * Dostosowanie kodu pod Python 3.8
+  Wersja 1.4.3
+  * Zamiana przekierowania homepage, zmiana adresu email na aktualny
+#  Wersja 1.4.2
+#  * Dostosowanie kodu pod Python 3.8
 #  Wersja 1.4.1
 #  * Dodanie informacji o qgisMaximumVersion
 #  Wersja 1.4.0
