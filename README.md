@@ -23,6 +23,10 @@ Wtyczka nie wymaga danych do działania.
 * Warunkiem koniecznym do prawidłowego działania wtyczki jest posiadanie wersji QGIS 3.28.1 lub wyższej.
 * Zalecane jest korzystanie ze stabilnej wersji QGIS, rekomendowana wersja to 3.40.13
 
+## Kontakt
+
+Wtyczka została stworzona przez ****EnviroSolutions**. W razie pytań lub potrzeby wsparcia skontaktuj się z nami przez e-mail:** **[gis@envirosolutions.pl](mailto:gis@envirosolutions.pl)**.
+
 ## EN
 A QGIS plugin that allows checking the terrain elevation at a given point in Poland. It operates based on data from the NMT database, provided by the Head Office of Geodesy and Cartography.
 
@@ -45,3 +49,7 @@ The plugin does not require any data to operate.
 ### Note:
 * A necessary condition for the proper functioning of the plugin is having QGIS version 3.28.1 or higher.
 * It is recommended to use a stable version of QGIS, the suggested version is 3.40.13.
+
+## Contact
+
+The plugin was developed by ****EnviroSolutions**. For questions or support, contact us at:** **[gis@envirosolutions.pl](mailto:gis@envirosolutions.pl)**.
