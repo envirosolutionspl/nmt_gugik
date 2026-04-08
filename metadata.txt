@@ -57,7 +57,7 @@ changelog=
 # Tags are comma separated with spaces allowed
 tags=python, nmt, dem, GUGiK, wysokości, level, poziom, EnviroSolutions, wysokość, poziom
 
-homepage=https://envirosolutions.pl/wtyczki-qgis/przechwyc-wysokosc-gugik/
+homepage=https://envirosolutions.pl/wtyczki-qgis/nmt-gugik
 category=Plugins
 icon=icons/icon_pw.svg
 # experimental flag
