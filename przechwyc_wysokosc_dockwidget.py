@@ -109,8 +109,15 @@ class PrzechwycWysokoscDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         need = (self.header_frame.sizeHint().height() + self.content_widget.minimumSizeHint().height()
                 + self.footer_frame.sizeHint().height() + frame)
         main_window = self.parentWidget()
-        if isinstance(main_window, QtWidgets.QMainWindow):  # na małym ekranie nie więcej niż 65% okna QGIS
-            need = min(need, int(main_window.height() * 0.65))
+        if isinstance(main_window, QtWidgets.QMainWindow):
+            area = main_window.dockWidgetArea(self)
+            others = [d for d in main_window.findChildren(QtWidgets.QDockWidget)
+                      if d is not self and d.isVisible() and not d.isFloating()
+                      and main_window.dockWidgetArea(d) == area and abs(d.x() - self.x()) < 5]
+            room = self.height() + sum(d.height() - d.minimumSizeHint().height() for d in others)
+            need = min(need, room)
+        if need <= self.height():
+            return
         self.setMinimumHeight(need)
         QTimer.singleShot(0, self._releaseMinimumHeight)
 
