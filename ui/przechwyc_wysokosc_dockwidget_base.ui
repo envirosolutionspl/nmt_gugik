@@ -18,7 +18,8 @@
     <normaloff>../icons/icon_pw.svg</normaloff>../icons/icon_pw.svg</iconset>
   </property>
   <property name="styleSheet">
-   <string notr="true">QScrollArea#scrollArea { border: none; background: transparent; }
+   <string notr="true">* { font-family: "DejaVu Sans"; }
+QScrollArea#scrollArea { border: none; background: transparent; }
 QLabel#lbl_title { font-size: 16px; font-weight: 700; }
 QLabel#lbl_subtitle, QLabel#lbl_pluginVersion { font-size: 11px; }
 QToolButton#btn_help, QToolButton#btn_close { border: none; border-radius: 6px; padding: 3px; }
@@ -26,17 +27,18 @@ QLabel#lbl_email, QLabel#lbl_szkolenia { font-size: 10px; }
 QLabel#label_5 { background: transparent; padding: 0px; }
 
 QFrame#card_capture, QFrame#card_result { border-radius: 6px; }
-QLabel[role="card-title"] { font-weight: 700; padding: 6px 10px; border-top-left-radius: 5px; border-top-right-radius: 5px; }
-QLabel[role="hint"] { font-size: 11px; }
-QLabel#lbl_capture_hint { font-size: 10px; }
-QLabel[role="caption"] { font-size: 11px; }
+QLabel[role="card-title"] { font-size: 14px; font-weight: 700; padding: 7px 10px; border-top-left-radius: 5px; border-top-right-radius: 5px; }
+QLabel[role="hint"] { font-size: 10px; }
+QLabel[role="caption"] { font-size: 10px; }
 QLabel[role="unit"] { font-weight: 700; }
 
 QLineEdit { border-radius: 4px; padding: 0px 6px; }
 QLineEdit#heightEdit { font-size: 24px; font-weight: 700; padding: 0px 8px; }
+QLineEdit#coordsEdit { font-family: Consolas; font-size: 12px; }
 
 QPushButton { border-radius: 4px; padding: 5px 12px; min-height: 18px; }
 QPushButton[role="primary"] { font-weight: 700; padding: 7px 10px; border: none; }
+QPushButton#captureButton { font-size: 14px; }
 
 QPushButton:focus, QToolButton:focus { outline: none; }
 
@@ -113,7 +115,7 @@ QDockWidget[theme="dark"] QPushButton[role="primary"]:disabled { background: #3e
   <widget class="QWidget" name="dockWidgetContents">
    <property name="minimumSize">
     <size>
-     <width>420</width>
+     <width>460</width>
      <height>0</height>
     </size>
    </property>
