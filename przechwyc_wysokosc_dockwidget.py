@@ -89,8 +89,8 @@ class PrzechwycWysokoscDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # Logo w stopce: zielone na jasnym tle, białe na ciemnym.
         self._setFooterLogo(FOOTER_LOGOS[theme])
 
-    def _setFooterLogo(self, filename, height=34):
-        ThemeUtils.setLogo(self.label_5, filename, height)
+    def _setFooterLogo(self, filename):
+        ThemeUtils.setLogo(self.label_5, filename, self.label_5.maximumHeight())
 
     def showEvent(self, event):
         self._applyTheme()
@@ -124,8 +124,8 @@ class PrzechwycWysokoscDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
     def _releaseMinimumHeight(self):
         try:
             self.setMinimumHeight(0)
-        except RuntimeError:  # panel usunięty zanim timer zdążył się wykonać
-            return
+        except RuntimeError as e:  # panel usunięty, zanim timer zdążył się wykonać
+            MessageUtils.pushLogWarning(f"Nie można zwolnić minimalnej wysokości panelu (RuntimeError): {e}")
 
     def changeEvent(self, event):
         # changeEvent przychodzi już w trakcie setupUi - wtedy _theme jeszcze nie istnieje

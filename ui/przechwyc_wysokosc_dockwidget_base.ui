@@ -27,18 +27,18 @@ QLabel#lbl_email, QLabel#lbl_szkolenia { font-size: 10px; }
 QLabel#label_5 { background: transparent; padding: 0px; }
 
 QFrame#card_capture, QFrame#card_result { border-radius: 6px; }
-QLabel[role="card-title"] { font-size: 14px; font-weight: 700; padding: 7px 10px; border-top-left-radius: 5px; border-top-right-radius: 5px; }
+QLabel[role="card-title"] { font-size: 13px; font-weight: 700; padding: 2px 10px; border-top-left-radius: 5px; border-top-right-radius: 5px; }
 QLabel[role="hint"] { font-size: 10px; }
 QLabel[role="caption"] { font-size: 10px; }
 QLabel[role="unit"] { font-weight: 700; }
 
 QLineEdit { border-radius: 4px; padding: 0px 6px; }
-QLineEdit#heightEdit { font-size: 24px; font-weight: 700; padding: 0px 8px; }
+QLineEdit#heightEdit { font-size: 18px; font-weight: 700; padding: 0px 8px; }
 QLineEdit#coordsEdit { font-family: Consolas; font-size: 12px; }
 
-QPushButton { border-radius: 4px; padding: 5px 12px; min-height: 18px; }
-QPushButton[role="primary"] { font-weight: 700; padding: 7px 10px; border: none; }
-QPushButton#captureButton { font-size: 14px; }
+QPushButton { border-radius: 4px; padding: 4px 12px; min-height: 16px; }
+QPushButton[role="primary"] { font-weight: 700; padding: 4px 10px; border: none; }
+QPushButton#captureButton { font-size: 13px; }
 
 QPushButton:focus, QToolButton:focus { outline: none; }
 
@@ -148,26 +148,26 @@ QDockWidget[theme="dark"] QPushButton[role="primary"]:disabled { background: #3e
         <number>12</number>
        </property>
        <property name="topMargin">
-        <number>10</number>
+        <number>4</number>
        </property>
        <property name="rightMargin">
         <number>8</number>
        </property>
        <property name="bottomMargin">
-        <number>10</number>
+        <number>4</number>
        </property>
        <item>
         <widget class="QLabel" name="label_4">
          <property name="minimumSize">
           <size>
-           <width>38</width>
-           <height>38</height>
+           <width>32</width>
+           <height>32</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>38</width>
-           <height>38</height>
+           <width>32</width>
+           <height>32</height>
           </size>
          </property>
          <property name="text">
@@ -292,19 +292,19 @@ QDockWidget[theme="dark"] QPushButton[role="primary"]:disabled { background: #3e
       <widget class="QWidget" name="content_widget">
        <layout class="QVBoxLayout" name="verticalLayout_content">
         <property name="spacing">
-         <number>10</number>
+         <number>6</number>
         </property>
         <property name="leftMargin">
-         <number>10</number>
+         <number>6</number>
         </property>
         <property name="topMargin">
-         <number>10</number>
+         <number>6</number>
         </property>
         <property name="rightMargin">
-         <number>10</number>
+         <number>6</number>
         </property>
         <property name="bottomMargin">
-         <number>10</number>
+         <number>6</number>
         </property>
         <item>
          <widget class="QFrame" name="card_capture">
@@ -340,19 +340,19 @@ QDockWidget[theme="dark"] QPushButton[role="primary"]:disabled { background: #3e
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_card_capture_body">
              <property name="spacing">
-              <number>8</number>
+              <number>4</number>
              </property>
              <property name="leftMargin">
               <number>10</number>
              </property>
              <property name="topMargin">
-              <number>8</number>
+              <number>4</number>
              </property>
              <property name="rightMargin">
               <number>10</number>
              </property>
              <property name="bottomMargin">
-              <number>10</number>
+              <number>6</number>
              </property>
              <item>
               <widget class="QLabel" name="lbl_capture_hint">
@@ -423,19 +423,19 @@ QDockWidget[theme="dark"] QPushButton[role="primary"]:disabled { background: #3e
            <item>
             <layout class="QVBoxLayout" name="verticalLayout_card_result_body">
              <property name="spacing">
-              <number>4</number>
+              <number>3</number>
              </property>
              <property name="leftMargin">
               <number>10</number>
              </property>
              <property name="topMargin">
-              <number>8</number>
+              <number>4</number>
              </property>
              <property name="rightMargin">
               <number>10</number>
              </property>
              <property name="bottomMargin">
-              <number>10</number>
+              <number>6</number>
              </property>
              <item>
               <widget class="QLabel" name="lbl_height_caption">
@@ -457,7 +457,7 @@ QDockWidget[theme="dark"] QPushButton[role="primary"]:disabled { background: #3e
                  <property name="minimumSize">
                   <size>
                    <width>0</width>
-                   <height>44</height>
+                   <height>32</height>
                   </size>
                  </property>
                  <property name="alignment">
@@ -495,7 +495,7 @@ QDockWidget[theme="dark"] QPushButton[role="primary"]:disabled { background: #3e
                <property name="minimumSize">
                 <size>
                  <width>0</width>
-                 <height>28</height>
+                 <height>26</height>
                 </size>
                </property>
                <property name="alignment">
@@ -575,13 +575,13 @@ QDockWidget[theme="dark"] QPushButton[role="primary"]:disabled { background: #3e
         <number>10</number>
        </property>
        <property name="topMargin">
-        <number>6</number>
+        <number>4</number>
        </property>
        <property name="rightMargin">
         <number>10</number>
        </property>
        <property name="bottomMargin">
-        <number>6</number>
+        <number>4</number>
        </property>
        <item>
         <widget class="QLabel" name="lbl_email">
@@ -616,14 +616,14 @@ QDockWidget[theme="dark"] QPushButton[role="primary"]:disabled { background: #3e
         <widget class="QLabel" name="label_5">
          <property name="minimumSize">
           <size>
-           <width>156</width>
-           <height>34</height>
+           <width>120</width>
+           <height>26</height>
           </size>
          </property>
          <property name="maximumSize">
           <size>
-           <width>156</width>
-           <height>34</height>
+           <width>120</width>
+           <height>26</height>
           </size>
          </property>
          <property name="text">
