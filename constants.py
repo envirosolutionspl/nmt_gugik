@@ -25,3 +25,11 @@ NMT_SERVICE_URL = "https://services.gugik.gov.pl/nmt/"
 EPSG = 2180
 
 PLUGIN_ICON = './icons/icon.svg'
+
+
+HOME_LINK = 'https://envirosolutions.pl/wtyczki-qgis/nmt-gugik'
+
+FOOTER_LINK_COLORS = {'light': '#4a5250', 'dark': '#b8c0bc'}
+
+# Logo w stopce zależne od motywu (pliki w images/).
+FOOTER_LOGOS = {'light': 'es_logo_h.png', 'dark': 'es_logo_white.png'}

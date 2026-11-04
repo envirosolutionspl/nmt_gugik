@@ -33,7 +33,7 @@ from .resources import *
 from .przechwyc_wysokosc_dockwidget import PrzechwycWysokoscDockWidget
 import os.path
 from .nmt_api import NmtAPI
-from .constants import EPSG
+from .constants import EPSG, INDUSTRIES
 from .utils import QgsTools, QgisNetworkClient
 
 """Wersja wtyczki"""
@@ -54,11 +54,17 @@ class PrzechwycWysokosc:
         """
 
         self.settings = QgsSettings() 
+        self.iface = iface
 
         if Qgis.QGIS_VERSION_INT >= 31000:
             from .qgis_feed import QgisFeed
             self.selected_industry = self.settings.value("selected_industry", None)
             show_dialog = self.settings.value("showDialog", True, type=bool)
+
+            # wczytywanie branży jeżeli nie jest zgodna z aktualnym słownikiem
+            if self.selected_industry not in INDUSTRIES.values():
+                self.selected_industry = None
+                show_dialog = True
 
             if self.selected_industry is None and show_dialog:
                 self.showBranchSelectionDialog()
@@ -246,10 +252,6 @@ class PrzechwycWysokosc:
             self.dockwidget.copyButton.clicked.connect(self.copyButtonClicked)
             self.dockwidget.closingPlugin.connect(self.onClosePlugin)
 
-            # informacje o wersji
-            self.dockwidget.setWindowTitle('%s %s' % (plugin_name, plugin_version))
-            self.dockwidget.lbl_pluginVersion.setText('%s %s' % (plugin_name, plugin_version))
-
             if isCompatibleQtVersion(QT_VERSION_STR, 6):
                 dock_location = Qt.DockWidgetArea.LeftDockWidgetArea
             else:
@@ -259,14 +261,10 @@ class PrzechwycWysokosc:
             self.dockwidget.show()
 
     def showBranchSelectionDialog(self):
-        self.qgisfeed_dialog = QgisFeedDialog()
-
-        if self.qgisfeed_dialog.exec() == QDialog.Accepted:
-            self.selected_branch = self.qgisfeed_dialog.comboBox.currentText()
-            
-            #Zapis w QGIS3.ini
-            self.settings.setValue("selected_industry", self.selected_branch)  
-            self.settings.setValue("showDialog", False) 
+        """Wyświetla dialog wyboru branży dla QGIS Feed."""
+        dialog = QgisFeedDialog(self.iface.mainWindow())
+        dialog.exec()
+        self.selected_industry = self.settings.value("selected_industry", None)
 
     def captureButtonClicked(self):
         """
