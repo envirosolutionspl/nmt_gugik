@@ -23,12 +23,24 @@
 """
 
 import os
+import re
+import configparser
 
 from qgis.PyQt import QtGui, QtWidgets, uic
-from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtCore import pyqtSignal, QDir, QEvent, QTimer, QUrl
+from qgis.PyQt.QtGui import QDesktopServices
 
-FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'przechwyc_wysokosc_dockwidget_base.ui'))
+from . import PLUGIN_VERSION
+from .constants import FOOTER_LINK_COLORS, FOOTER_LOGOS, HOME_LINK
+from .utils import MessageUtils, ThemeUtils
+
+PLUGIN_DIR = os.path.dirname(__file__)
+
+# Prefiks "pwimg:" używany w url(...) arkusza stylów w pliku .ui.
+# Musi być zarejestrowany PRZED setupUi, inaczej QSS nie znajdzie ikon.
+QDir.addSearchPath('pwimg', os.path.join(PLUGIN_DIR, 'images'))
+
+FORM_CLASS, _ = uic.loadUiType(os.path.join(PLUGIN_DIR, 'ui', 'przechwyc_wysokosc_dockwidget_base.ui'))
 
 
 class PrzechwycWysokoscDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
@@ -44,8 +56,105 @@ class PrzechwycWysokoscDockWidget(QtWidgets.QDockWidget, FORM_CLASS):
         # http://doc.qt.io/qt-5/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+        self._theme = None
+        self._applyTheme()
         self.label_4.setMargin(5)
+        self._setupLook()
+
+    # ------------------------------- Wygląd -----------------------------------
+
+    def _setupLook(self):
+        """Elementy wyglądu, których nie da się opisać w pliku .ui."""
+        self.lbl_pluginVersion.setText('v%s' % PLUGIN_VERSION)
+        self.btn_help.clicked.connect(self._openHelp)
+        self.btn_close.clicked.connect(self.close)
+        self._setupTitleBar()
+
+    def _setupTitleBar(self):
+        """Nagłówek wtyczki jako pasek tytułu panelu - zamiast systemowego paska z nazwą."""
+        self.verticalLayout_main.removeWidget(self.header_frame)
+        self.setTitleBarWidget(self.header_frame)
+
+    def _applyTheme(self, force=False):
+        """Ustawia właściwość "theme" - kolory zdefiniowane w arkuszu stylów w pliku .ui."""
+        theme = 'dark' if ThemeUtils.isDarkTheme() else 'light'
+        if theme == self._theme and not force:
+            return
+        self._theme = theme
+        self.setProperty('theme', theme)
+        ThemeUtils.repolishAll(self)
+        color = FOOTER_LINK_COLORS[theme]
+        for lbl in (self.lbl_email, self.lbl_szkolenia):
+            lbl.setText(re.sub(r'style="[^"]*"', 'style="text-decoration:underline; color:%s;"' % color, lbl.text()))
+        # Logo w stopce: zielone na jasnym tle, białe na ciemnym.
+        self._setFooterLogo(FOOTER_LOGOS[theme])
+
+    def _setFooterLogo(self, filename):
+        ThemeUtils.setLogo(self.label_5, filename, self.label_5.maximumHeight())
+
+    def showEvent(self, event):
+        self._applyTheme()
+        super().showEvent(event)
+        # dopiero po pokazaniu znany jest właściwy devicePixelRatio (skalowanie 125-150%)
+        self._setFooterLogo(FOOTER_LOGOS[self._theme])
+        self._fitHeightOnOpen()
+
+    def _fitHeightOnOpen(self):
+        """Przy otwarciu panel dostaje wysokość całej treści (chwilowe minimum - okno główne musi zrobić miejsce),
+        potem minimum jest zwalniane i panel można zmniejszyć (treść jest w obszarze przewijania)."""
+        if getattr(self, '_heightFitted', False) or self.isFloating():
+            return
+        self._heightFitted = True
+        frame = 2 * self.style().pixelMetric(QtWidgets.QStyle.PixelMetric.PM_DockWidgetFrameWidth, None, self)
+        need = (self.header_frame.sizeHint().height() + self.content_widget.minimumSizeHint().height()
+                + self.footer_frame.sizeHint().height() + frame)
+        main_window = self.parentWidget()
+        if isinstance(main_window, QtWidgets.QMainWindow):
+            area = main_window.dockWidgetArea(self)
+            others = [d for d in main_window.findChildren(QtWidgets.QDockWidget)
+                      if d is not self and d.isVisible() and not d.isFloating()
+                      and main_window.dockWidgetArea(d) == area and abs(d.x() - self.x()) < 5]
+            room = self.height() + sum(d.height() - d.minimumSizeHint().height() for d in others)
+            need = min(need, room)
+        if need <= self.height():
+            return
+        self.setMinimumHeight(need)
+        QTimer.singleShot(0, self._releaseMinimumHeight)
+
+    def _releaseMinimumHeight(self):
+        try:
+            self.setMinimumHeight(0)
+        except RuntimeError as e:  # panel usunięty, zanim timer zdążył się wykonać
+            MessageUtils.pushLogWarning(f"Nie można zwolnić minimalnej wysokości panelu (RuntimeError): {e}")
+
+    def changeEvent(self, event):
+        # changeEvent przychodzi już w trakcie setupUi - wtedy _theme jeszcze nie istnieje
+        if (event.type() in (QEvent.Type.PaletteChange, QEvent.Type.StyleChange)
+                and getattr(self, '_theme', None) is not None):
+            self._applyTheme()
+        super().changeEvent(event)
+
+    def _openHelp(self):
+        url = self._readHomepage() or HOME_LINK
+        QDesktopServices.openUrl(QUrl(url))
+
+    @staticmethod
+    def _readHomepage():
+        """Adres strony wtyczki z metadata.txt; pusty tekst, gdy nie da się go odczytać."""
+        parser = configparser.ConfigParser(interpolation=None)
+        try:
+            # brak pliku lub brak dostępu read() pomija sam (bez wyjątku)
+            parser.read(os.path.join(PLUGIN_DIR, 'metadata.txt'), encoding='utf-8')
+        except UnicodeDecodeError as e:
+            MessageUtils.pushLogWarning(f"Nie można odczytać metadata.txt - złe kodowanie (UnicodeDecodeError): {e}")
+            return ''
+        except configparser.Error as e:
+            MessageUtils.pushLogWarning(f"Błędny format metadata.txt ({type(e).__name__}): {e}")
+            return ''
+        # fallback - brak sekcji lub klucza nie rzuca wyjątku
+        return parser.get('general', 'homepage', fallback='')
 
     def closeEvent(self, event):
+        self._heightFitted = False  # po ponownym otwarciu znowu pełna wysokość
         self.closingPlugin.emit()
         event.accept()
