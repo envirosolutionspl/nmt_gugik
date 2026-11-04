@@ -21,10 +21,10 @@ class TestNmtApiHeightRequest(unittest.TestCase):
         """
         data_file = os.path.join(os.path.dirname(__file__), TEST_DATA_FILE)
         cls.test_coordinates = []
-        
+
         if not os.path.exists(data_file):
             raise FileNotFoundError(f"Plik danych testowych nie znaleziony: {data_file}")
-        
+
         with open(data_file, 'r') as f:
             for line in f:
                 line = line.strip()
@@ -44,20 +44,20 @@ class TestNmtApiHeightRequest(unittest.TestCase):
         - Odpowiedź nie powinna być równa "0" (takie wyniki są błędne i wynikaja z tego że punkt w złym układzie współrzędnych znalazł się poza Polską)
         """
         self.assertTrue(self.test_coordinates, "Brak danych testowych do sprawdzenia")
-        
+
         total_tests = len(self.test_coordinates)
         errors = []
         success_count = 0
-        
+
         print(f"\n{'='*60}")
         print(f"TEST API GUGIK - Pobieranie wysokości dla {total_tests} punktów")
-        print(f"Współrzędne w formacie PUWG1992 (EPSG:2180)")
+        print("Współrzędne w formacie PUWG1992 (EPSG:2180)")
         print(f"{'='*60}\n")
-        
+
         for i, (x, y) in enumerate(self.test_coordinates, 1):
             print(f"Punkt {i}/{total_tests}: X={x:.2f}, Y={y:.2f} ... ", end='', flush=True)
             result = NmtAPI.getHbyXY(x, y)
-        
+
             if result is None:
                 error_msg = f"Punkt {i} ({x:.2f}, {y:.2f}): Błąd połączenia (wynik=None)"
                 print("FAIL (Błąd połączenia)")
@@ -75,7 +75,7 @@ class TestNmtApiHeightRequest(unittest.TestCase):
                 success_count += 1
             if i < total_tests:
                 time.sleep(SLEEP_BETWEEN_REQUESTS)
-        
+
         # === PODSUMOWANIE ===
         print("\n" + "="*40)
         print("PODSUMOWANIE TESTU")
@@ -83,7 +83,7 @@ class TestNmtApiHeightRequest(unittest.TestCase):
         print(f"Przetestowano: {total_tests} punktów")
         print(f"Sukcesy:       {success_count}")
         print(f"Błędy:         {len(errors)}\n")
-        
+
         if errors:
             print("\nSzczegóły błędów:")
             for error in errors:

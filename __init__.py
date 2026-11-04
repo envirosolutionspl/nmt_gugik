@@ -35,6 +35,8 @@ with open(os.path.join(os.path.dirname(__file__), 'metadata.txt'), 'r') as plugi
             PLUGIN_NAME = line.strip().split('=')[-1]
 
 # noinspection PyPep8Naming
+
+
 def classFactory(iface):  # pylint: disable=invalid-name
     """Load PrzechwycWysokosc class from file PrzechwycWysokosc.
 

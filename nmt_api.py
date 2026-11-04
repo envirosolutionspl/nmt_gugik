@@ -11,6 +11,7 @@ if not hasattr(QEventLoop, 'exec'):
 if not hasattr(QDialog, 'exec'):
     QDialog.exec = QDialog.exec_
 
+
 class NmtAPI:
 
     URL = NMT_SERVICE_URL

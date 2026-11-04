@@ -21,22 +21,21 @@
  *                                                                         *
  ***************************************************************************/
 """
-from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, Qt, QT_VERSION_STR
+from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication, Qt
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QToolBar, QApplication, QShortcut, QWidget, QLabel, QDialog, QComboBox
 from qgis.PyQt import uic
 from qgis.gui import QgsMapToolEmitPoint
 from qgis.core import QgsProject, QgsCoordinateReferenceSystem, QgsCoordinateTransform, Qgis, QgsSettings
 from .qgis_feed import QgisFeedDialog
-from .utils import isCompatibleQtVersion
-from .resources import *
+from . import resources  # rejestracja zasobów Qt
 from .przechwyc_wysokosc_dockwidget import PrzechwycWysokoscDockWidget
 import os.path
 from .nmt_api import NmtAPI
 from .constants import EPSG, INDUSTRIES
 from .utils import QgsTools, QgisNetworkClient
 
-"""Wersja wtyczki"""
+# Wersja wtyczki
 from . import PLUGIN_VERSION as plugin_version
 from . import PLUGIN_NAME as plugin_name
 
@@ -53,7 +52,7 @@ class PrzechwycWysokosc:
         :type iface: QgsInterface
         """
 
-        self.settings = QgsSettings() 
+        self.settings = QgsSettings()
         self.iface = iface
 
         if Qgis.QGIS_VERSION_INT >= 31000:
@@ -98,7 +97,7 @@ class PrzechwycWysokosc:
 
         self.pluginIsActive = False
         self.dockwidget = None
-        
+
         self.project = QgsProject.instance()
         self.canvas = self.iface.mapCanvas()
         self.clickTool = QgsMapToolEmitPoint(self.canvas)
@@ -126,19 +125,17 @@ class PrzechwycWysokosc:
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
         return QCoreApplication.translate('PrzechwycWysokosc', message)
 
-
     def addAction(
-        self,
-        icon_path,
-        text,
-        callback,
-        enabled_flag=True,
-        add_to_menu=True,
-        add_to_toolbar=True,
-        status_tip=None,
-        whats_this=None,
-        parent=None):
-
+            self,
+            icon_path,
+            text,
+            callback,
+            enabled_flag=True,
+            add_to_menu=True,
+            add_to_toolbar=True,
+            status_tip=None,
+            whats_this=None,
+            parent=None):
         """Add a toolbar icon to the toolbar.
 
         :param icon_path: Path to the icon for this action. Can be a resource
@@ -201,7 +198,6 @@ class PrzechwycWysokosc:
 
         return action
 
-
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
@@ -212,13 +208,11 @@ class PrzechwycWysokosc:
             callback=self.run,
             parent=self.iface.mainWindow())
 
-
     def onClosePlugin(self):
         """Cleanup necessary items here when plugin dockwidget is closed"""
 
         self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
         self.pluginIsActive = False
-
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
@@ -230,20 +224,19 @@ class PrzechwycWysokosc:
             self.toolbar.removeAction(action)
         del self.toolbar
 
-
     def run(self):
         """Run method that loads and starts the plugin"""
 
         if not self.pluginIsActive:
             self.pluginIsActive = True
 
-            #print "** STARTING PrzechwycWysokosc"
+            # print "** STARTING PrzechwycWysokosc"
 
             # dockwidget may not exist if:
             #    first run of plugin
             #    removed on close (see self.onClosePlugin method)
 
-            if self.dockwidget == None:
+            if self.dockwidget is None:
                 # Create the dockwidget (after translation) and keep reference
                 self.dockwidget = PrzechwycWysokoscDockWidget()
 
@@ -252,12 +245,7 @@ class PrzechwycWysokosc:
             self.dockwidget.copyButton.clicked.connect(self.copyButtonClicked)
             self.dockwidget.closingPlugin.connect(self.onClosePlugin)
 
-            if isCompatibleQtVersion(QT_VERSION_STR, 6):
-                dock_location = Qt.DockWidgetArea.LeftDockWidgetArea
-            else:
-                dock_location = Qt.LeftDockWidgetArea
-
-            self.iface.addDockWidget(dock_location, self.dockwidget)
+            self.iface.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.dockwidget)
             self.dockwidget.show()
 
     def showBranchSelectionDialog(self):
@@ -277,13 +265,13 @@ class PrzechwycWysokosc:
         """
         Funkcja kopiuje zczytane współrzędne do schowka
         """
-        
+
         cb = QApplication.clipboard()
-        cb.clear() 
+        cb.clear()
         cb.setText("(%s, %s)" % (
             self.dockwidget.coordsEdit.text(),
             self.dockwidget.heightEdit.text()
-        )) 
+        ))
         self.tools.pushMessage("Skopiowano współrzedne x,y,h do schowka")
         self.tools.pushLogInfo("Skopiowano współrzedne x,y,h do schowka")
 
@@ -291,7 +279,7 @@ class PrzechwycWysokosc:
         """
         Funkcja odpowiadająca za ściągnięcie współrzędnych dla klikniętego punktu na mapie
         """
-        
+
         coords = "{}, {}".format(point.x(), point.y())
 
         self.dockwidget.coordsEdit.setText(coords)
@@ -305,12 +293,12 @@ class PrzechwycWysokosc:
         """
 
         crsSource = QgsCoordinateReferenceSystem(source_epsg)
-        crsDest = QgsCoordinateReferenceSystem(f"EPSG:{EPSG}") 
+        crsDest = QgsCoordinateReferenceSystem(f"EPSG:{EPSG}")
         xform = QgsCoordinateTransform(crsSource, crsDest, self.project)
         point1992 = xform.transform(point)
-        h = NmtAPI.getHbyXY(y=point1992.x(), x=point1992.y(),network_client=self.network_manager)
+        h = NmtAPI.getHbyXY(y=point1992.x(), x=point1992.y(), network_client=self.network_manager)
         if h is None:
-            #błąd usługi lub brak połączenia z internetem
+            # błąd usługi lub brak połączenia z internetem
             self.tools.pushCritical("Brak połączenia z serwerem, sprawdź czy działa połączenie z internetem")
             self.tools.pushLogCritical("Brak połączenia z serwerem, sprawdź czy działa połączenie z internetem")
         else:
