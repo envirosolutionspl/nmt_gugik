@@ -1,9 +1,5 @@
 FEED_URL = 'https://qgisfeed.envirosolutions.pl/'
 
-QT_VER = {
-    6: "6."
-}
-
 INDUSTRIES = {
     "999": "Nie wybrano",
     "e": "Energetyka/OZE",

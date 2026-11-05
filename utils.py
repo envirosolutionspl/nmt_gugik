@@ -1,14 +1,14 @@
 import os
 
-from qgis._core import QgsMessageLog, Qgis, QgsNetworkAccessManager
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsMessageLog, Qgis, QgsNetworkAccessManager
 from qgis.PyQt.QtWidgets import QMessageBox, QWidget
 from qgis.PyQt.QtGui import QIcon, QPalette, QPixmap
 from qgis.PyQt.QtCore import QUrl, QUrlQuery, QEventLoop, Qt
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
-from .constants import PLUGIN_ICON, QT_VER
+from .constants import PLUGIN_ICON
 from . import PLUGIN_NAME
+
 
 class QgsTools:
 
@@ -20,7 +20,7 @@ class QgsTools:
 
     def pushMessageBox(self, message):
         msg_box = QMessageBox(
-            QMessageBox.Information,
+            QMessageBox.Icon.Information,
             'Informacja',
             message,
             QMessageBox.StandardButton.Ok
@@ -30,20 +30,20 @@ class QgsTools:
 
     def pushQuestionBox(self, question) -> QMessageBox.StandardButton:
         msg_box = QMessageBox(
-            QMessageBox.Question,
+            QMessageBox.Icon.Question,
             'Uwaga',
             question,
-            QMessageBox.Yes or QMessageBox.No
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
         msg_box.setWindowIcon(QIcon(self.plugin_icon))
         reply = msg_box.exec()
         return reply
-    
+
     def pushMessage(self, message: str) -> None:
         self.iface.messageBar().pushMessage(
             'Informacja',
             message,
-            level=Qgis.Info,
+            level=Qgis.MessageLevel.Info,
             duration=10
         )
 
@@ -51,7 +51,7 @@ class QgsTools:
         self.iface.messageBar().pushMessage(
             'Ostrzeżenie',
             message,
-            level=Qgis.Warning,
+            level=Qgis.MessageLevel.Warning,
             duration=10
         )
 
@@ -59,26 +59,29 @@ class QgsTools:
         self.iface.messageBar().pushMessage(
             'Błąd',
             message,
-            level=Qgis.Critical,
+            level=Qgis.MessageLevel.Critical,
             duration=10
         )
+
     @staticmethod
     def pushLogInfo(message: str) -> None:
-        QgsMessageLog.logMessage(message, tag=PLUGIN_NAME, level=Qgis.Info)
+        QgsMessageLog.logMessage(message, tag=PLUGIN_NAME, level=Qgis.MessageLevel.Info)
 
     @staticmethod
     def pushLogWarning(message: str) -> None:
-        QgsMessageLog.logMessage(message, tag=PLUGIN_NAME, level=Qgis.Warning)
+        QgsMessageLog.logMessage(message, tag=PLUGIN_NAME, level=Qgis.MessageLevel.Warning)
 
     @staticmethod
     def pushLogCritical(message: str) -> None:
-        QgsMessageLog.logMessage(message, tag=PLUGIN_NAME, level=Qgis.Critical)
+        QgsMessageLog.logMessage(message, tag=PLUGIN_NAME, level=Qgis.MessageLevel.Critical)
+
 
 class QgisNetworkClient:
     """
     Klasa pomocnicza do obsługi zapytań HTTP w środowisku QGIS / Qt.
     Niezależna od konkretnego API.
     """
+
     def __init__(self):
         self.manager = QgsNetworkAccessManager.instance()
 
@@ -92,12 +95,8 @@ class QgisNetworkClient:
 
     def buildRequest(self, url: QUrl) -> QNetworkRequest:
         request = QNetworkRequest(url)
-        if hasattr(QNetworkRequest, 'KnownHeaders'):
-            ua_header = QNetworkRequest.KnownHeaders.UserAgentHeader  # Qt6
-        else:
-            ua_header = QNetworkRequest.UserAgentHeader  # Qt5
         request.setHeader(
-            ua_header, 
+            QNetworkRequest.KnownHeaders.UserAgentHeader,
             f"QGIS-Plugin-{PLUGIN_NAME}"
         )
         return request
@@ -110,17 +109,13 @@ class QgisNetworkClient:
         return reply
 
     def isSuccess(self, reply: QNetworkReply) -> bool:
-        if hasattr(QNetworkReply, 'NetworkError'):
-            no_err = QNetworkReply.NetworkError.NoError  # Qt6
-        else:
-            no_err = QNetworkReply.NoError  # Qt5
-        return reply.error() == no_err
+        return reply.error() == QNetworkReply.NetworkError.NoError
 
     def readReply(self, reply: QNetworkReply) -> str:
         data = reply.readAll().data().decode("utf-8")
         reply.deleteLater()
         return data
-    
+
     def getRequest(self, base_url: str, params: dict) -> str or None:
         url = self.buildUrl(base_url, params)
         request = self.buildRequest(url)
@@ -129,9 +124,6 @@ class QgisNetworkClient:
             return self.readReply(reply)
         reply.deleteLater()
         return None
-
-def isCompatibleQtVersion(cur_version, tar_version):
-    return cur_version.startswith(QT_VER[tar_version])
 
 
 class MessageUtils:
