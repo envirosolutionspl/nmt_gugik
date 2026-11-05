@@ -1,0 +1,7 @@
+[flake8]
+# Ignorowanie zbyt długich linii i nieużywanych importów w całym projekcie
+extend-ignore = E501, F401
+
+# Pliki generowane automatycznie (pyrcc) nie podlegają sprawdzaniu
+extend-exclude =
+    resources.py
