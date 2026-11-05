@@ -6,7 +6,7 @@ from qgis.PyQt.QtGui import QIcon, QPalette, QPixmap
 from qgis.PyQt.QtCore import QUrl, QUrlQuery, QEventLoop, Qt
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
-from .constants import PLUGIN_ICON, QT_VER
+from .constants import PLUGIN_ICON
 from . import PLUGIN_NAME
 
 
@@ -124,10 +124,6 @@ class QgisNetworkClient:
             return self.readReply(reply)
         reply.deleteLater()
         return None
-
-
-def isCompatibleQtVersion(cur_version, tar_version):
-    return cur_version.startswith(QT_VER[tar_version])
 
 
 class MessageUtils:
