@@ -4,8 +4,13 @@ import unittest
 import time
 import os
 
-from test.constants import SLEEP_BETWEEN_REQUESTS, TEST_DATA_FILE
-from nmt_api import NmtAPI
+from qgis.testing import start_app
+
+from .constants import SLEEP_BETWEEN_REQUESTS, TEST_DATA_FILE
+from ..nmt_api import NmtAPI
+from ..utils import QgisNetworkClient
+
+start_app()
 
 
 class TestNmtApiHeightRequest(unittest.TestCase):
@@ -21,6 +26,7 @@ class TestNmtApiHeightRequest(unittest.TestCase):
         """
         data_file = os.path.join(os.path.dirname(__file__), TEST_DATA_FILE)
         cls.test_coordinates = []
+        cls.network_client = QgisNetworkClient()
 
         if not os.path.exists(data_file):
             raise FileNotFoundError(f"Plik danych testowych nie znaleziony: {data_file}")
@@ -56,7 +62,7 @@ class TestNmtApiHeightRequest(unittest.TestCase):
 
         for i, (x, y) in enumerate(self.test_coordinates, 1):
             print(f"Punkt {i}/{total_tests}: X={x:.2f}, Y={y:.2f} ... ", end='', flush=True)
-            result = NmtAPI.getHbyXY(x, y)
+            result = NmtAPI.getHbyXY(x, y, self.network_client)
 
             if result is None:
                 error_msg = f"Punkt {i} ({x:.2f}, {y:.2f}): Błąd połączenia (wynik=None)"
