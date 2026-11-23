@@ -27,12 +27,13 @@ from qgis.PyQt.QtWidgets import QAction, QToolBar, QApplication, QShortcut, QWid
 from qgis.PyQt import uic
 from qgis.gui import QgsMapToolEmitPoint
 from qgis.core import QgsProject, QgsCoordinateReferenceSystem, QgsCoordinateTransform, Qgis, QgsSettings
-from .qgis_feed import QgisFeedDialog
+from .qgis_feed import EnviroFeedManager
+from .qgis_feed_dialog import QgisFeedDialog
 from . import resources  # rejestracja zasobów Qt
 from .przechwyc_wysokosc_dockwidget import PrzechwycWysokoscDockWidget
 import os.path
 from .nmt_api import NmtAPI
-from .constants import EPSG, INDUSTRIES
+from .constants import EPSG
 from .utils import QgsTools, QgisNetworkClient
 
 # Wersja wtyczki
@@ -55,23 +56,10 @@ class PrzechwycWysokosc:
         self.settings = QgsSettings()
         self.iface = iface
 
+        self.feed_manager = None
         if Qgis.QGIS_VERSION_INT >= 31000:
-            from .qgis_feed import QgisFeed
-            self.selected_industry = self.settings.value("selected_industry", None)
-            show_dialog = self.settings.value("showDialog", True, type=bool)
-
-            # wczytywanie branży jeżeli nie jest zgodna z aktualnym słownikiem
-            if self.selected_industry not in INDUSTRIES.values():
-                self.selected_industry = None
-                show_dialog = True
-
-            if self.selected_industry is None and show_dialog:
-                self.showBranchSelectionDialog()
-
-            select_indust_session = self.settings.value('selected_industry')
-
-            self.feed = QgisFeed(selected_industry=select_indust_session, plugin_name=plugin_name)
-            self.feed.initFeed()
+            self.feed_manager = EnviroFeedManager(iface, plugin_name, QgisFeedDialog)
+            self.feed_manager.start()
 
         self.iface = iface
         self.plugin_dir = os.path.dirname(__file__)
@@ -217,6 +205,10 @@ class PrzechwycWysokosc:
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
 
+        if self.feed_manager is not None:
+            self.feed_manager.unload()
+            self.feed_manager = None
+
         for action in self.actions:
             self.iface.removePluginMenu(
                 self.tr(u'&EnviroSolutions'),
@@ -247,12 +239,6 @@ class PrzechwycWysokosc:
 
             self.iface.addDockWidget(Qt.DockWidgetArea.LeftDockWidgetArea, self.dockwidget)
             self.dockwidget.show()
-
-    def showBranchSelectionDialog(self):
-        """Wyświetla dialog wyboru branży dla QGIS Feed."""
-        dialog = QgisFeedDialog(self.iface.mainWindow())
-        dialog.exec()
-        self.selected_industry = self.settings.value("selected_industry", None)
 
     def captureButtonClicked(self):
         """
