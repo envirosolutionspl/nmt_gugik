@@ -129,6 +129,14 @@ class QgisNetworkClient:
 class MessageUtils:
 
     @staticmethod
+    def pushLogInfo(message: str) -> None:
+        QgsMessageLog.logMessage(
+            message,
+            tag=PLUGIN_NAME,
+            level=Qgis.MessageLevel.Info
+        )
+
+    @staticmethod
     def pushLogWarning(message: str) -> None:
         QgsMessageLog.logMessage(
             message,
